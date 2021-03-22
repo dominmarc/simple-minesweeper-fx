@@ -4,16 +4,24 @@ import java.security.SecureRandom;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MyController {
@@ -26,7 +34,8 @@ public class MyController {
 	@FXML
 	Button resetButton;
 	@FXML
-	Label timeLabel, bombsLabel;
+	Label timeLabel, bombsLabel, topBar;
+	
 	// no bomb --> 0
 	// x bombs --> x
 	// bomb --> 9
@@ -37,11 +46,10 @@ public class MyController {
 	int bombs = 10;
 	Background bomb;
 	Background checked;
-	Background unchecked;
-
-	Alert myAlert;
+	Background unchecked;	
 
 	public void initialize() {
+		topBar.setStyle("-fx-background-color: #272727");
 		// set all Buttons
 		buttons = new Button[82];
 		int x = 0;
@@ -55,7 +63,8 @@ public class MyController {
 				buttons[z].setLayoutY(y);
 				buttons[z].setPrefWidth(30);
 				buttons[z].setPrefHeight(30);
-				buttons[z].setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+				buttons[z].setPadding(new Insets(0));
+				buttons[z].setStyle("-fx-font-size: 17px; -fx-font-weight: bold;");
 				unchecked = new Background(new BackgroundFill(Color.web("#DEDEDE"), null, buttons[1].getInsets()));
 				buttons[z].setBackground(checked);
 				final int var = z;
@@ -65,8 +74,7 @@ public class MyController {
 					@Override
 					public void handle(MouseEvent event) {
 						if (!running) {
-							myAlert = new Alert(Alert.AlertType.WARNING, "Please start the game!");
-							myAlert.show();
+							popUp(false,"Please start the game!");
 							return;
 						}
 						if (event.getButton() == MouseButton.PRIMARY) {
@@ -111,12 +119,40 @@ public class MyController {
 				return false;
 			}
 		}
-		myAlert = new Alert(Alert.AlertType.INFORMATION, "Congratulation, you won the game!");
 		running = false;
-		myAlert.show();
+		popUp(true,"");
 		return true;
 	}
 
+	public void popUp(boolean win, String info){
+		Stage popUp = new Stage();
+		popUp.initModality(Modality.APPLICATION_MODAL);
+		popUp.setMinHeight(200);
+		popUp.setMinWidth(300);
+		popUp.getIcons()
+				.add(new Image(getClass().getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/bombred.png").toString()));
+		Label label = new Label();
+		label.setFont(new Font("Berlin Sans FB", 20));
+		label.setTextAlignment(TextAlignment.CENTER);
+		label.setStyle("-fx-text-fill: linear-gradient(to top, #ffcc00, #fbff02);");
+		VBox vBox = new VBox();
+		if (win) {
+			popUp.setTitle("Game Over!");
+			label.setText("You won!\nThank you for playing, have a nice day!");
+			vBox.getChildren().add(label);
+		} else {
+			vBox.getChildren().add(label);
+			popUp.setTitle("Attention");
+			label.setText("" + info);
+		}
+		vBox.setStyle(
+				"-fx-background-color: radial-gradient(center 50.0% 50.0%, radius 100.0%, #242424, #434343, #898989);");
+		vBox.setAlignment(Pos.CENTER);
+		Scene scene = new Scene(vBox);
+		popUp.setScene(scene);
+		popUp.showAndWait();
+	}
+	
 	/**
 	 * set game_field with 10 bombs and all values
 	 */
@@ -239,10 +275,18 @@ public class MyController {
 		for (int y = 1; y < 10; y++) {
 			for (int x = 1; x < 10; x++) {
 				if (game_field[x][y] != -1 && game_field[x][y] != 0 && game_field[x][y] != 9) {
+					if (game_field[x][y]==1) {
+						buttons[z].setTextFill(Color.rgb(56, 0, 254));
+					}else if (game_field[x][y]==2) {
+						buttons[z].setTextFill(Color.rgb(0, 107, 4));
+					}else {
+						buttons[z].setTextFill(Color.rgb(142, 11, 0));
+					}
 					buttons[z].setText(game_field[x][y] + "");
 					buttons[z].setBackground(checked);
 				} else if (game_field[x][y] == 9) {
 					buttons[z].setBackground(bomb);
+					buttons[z].setGraphic(new ImageView(new Image(getClass().getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/bombred.png").toString())));
 				} else {
 					buttons[z].setBackground(checked);
 				}
@@ -264,9 +308,8 @@ public class MyController {
 		// isBomb?
 		if (game_field[x][y] == 9) {
 			buttons[var].setBackground(bomb);
-			myAlert = new Alert(Alert.AlertType.INFORMATION, "Game Over, you hit a bomb!");
 			running = false;
-			myAlert.show();
+			popUp(false,"Game Over, you hit a bomb!");
 			showSolution();
 			return;
 		}
@@ -279,9 +322,17 @@ public class MyController {
 		// no bomb nearby
 		if (game_field[x][y] == 0) {
 			// open all zero fields nearby
+			buttons[var].setBackground(checked);
 			openFields(var, x, y);
 		} else if (game_field[x][y] > 0 && game_field[x][y] < 9) {
 			// open the clicked field
+			if (game_field[x][y]==1) {
+				buttons[var].setTextFill(Color.rgb(56, 0, 254));
+			}else if (game_field[x][y]==2) {
+				buttons[var].setTextFill(Color.rgb(0, 107, 4));
+			}else {
+				buttons[var].setTextFill(Color.rgb(142, 11, 0));
+			}
 			buttons[var].setBackground(checked);
 			buttons[var].setText(game_field[x][y] + "");
 		}
@@ -298,9 +349,11 @@ public class MyController {
 	public void secondaryButtonAction(int var) {
 		if (buttons[var].getBackground() == bomb) {
 			buttons[var].setBackground(unchecked);
+			buttons[var].setGraphic(null);
 			bombs++;
 		} else {
 			buttons[var].setBackground(bomb);
+			buttons[var].setGraphic(new ImageView(new Image(getClass().getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/flag.png").toString())));
 			bombs--;
 		}
 	}
@@ -314,6 +367,7 @@ public class MyController {
 			resetButton.setText("START GAME");
 			for (int i = 1; i < 82; i++) {
 				buttons[i].setBackground(unchecked);
+				buttons[i].setGraphic(null);
 				buttons[i].setText("");
 			}
 			bombs=10;
@@ -321,6 +375,7 @@ public class MyController {
 		} else if (!running) {
 			for (int i = 1; i < 82; i++) {
 				buttons[i].setBackground(unchecked);
+				buttons[i].setGraphic(null);
 				buttons[i].setText("");
 			}
 			bombs = 10;

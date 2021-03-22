@@ -5,14 +5,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class SimpleMinesweeperMain extends Application{
+public class SimpleMinesweeperMain extends Application {
 	private double xOffset = 0;
 	private double yOffset = 0;
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("Minesweeper.fxml"));
@@ -29,17 +31,21 @@ public class SimpleMinesweeperMain extends Application{
 		root.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				primaryStage.setX(event.getScreenX() - xOffset);
-				primaryStage.setY(event.getScreenY() - yOffset);
+				if (yOffset < 25) {
+					primaryStage.setX(event.getScreenX() - xOffset);
+					primaryStage.setY(event.getScreenY() - yOffset);
+				}
 			}
 		});
 
 		primaryStage.setScene(myScene);
+		primaryStage.getScene().getStylesheets().add(getClass().getResource("StyleFile.css").toString());
+		primaryStage.getIcons().add(new Image(getClass().getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/bombred.png").toString()));
 		primaryStage.setTitle("SimpleMinesweeper");
 		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
