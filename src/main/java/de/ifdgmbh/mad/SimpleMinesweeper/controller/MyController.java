@@ -36,17 +36,19 @@ public class MyController {
 	@FXML
 	Label timeLabel, bombsLabel, topBar;
 	
-	// no bomb --> 0
-	// x bombs --> x
-	// bomb --> 9
-	int[][] game_field; // = new int[11][11]; zeroes and tens not used (will be the frame) -->
-						// initialized with -1
+	/**
+	 * int[11][11] array; zeroes and tens not used (they frame the gamefield array with -1)</br>
+	 * no bomb = 0</br>
+	 * x bombs = x </br>
+	 * bomb = 9
+	 */
+	private int[][] game_field; 
 
-	boolean running = false;
-	int bombs = 10;
-	Background bomb;
-	Background checked;
-	Background unchecked;	
+	private boolean running = false;
+	private int bombs = 10;
+	private Background bomb;
+	private Background checked;
+	private Background unchecked;	
 
 	public void initialize() {
 		topBar.setStyle("-fx-background-color: #272727");
@@ -201,9 +203,7 @@ public class MyController {
 				if (h == 0 || h == 10) {
 					game_field[h][g] = -1;
 				}
-				System.out.print(game_field[h][g] + "\t");
 			}
-			System.out.println();
 		}
 	}
 
