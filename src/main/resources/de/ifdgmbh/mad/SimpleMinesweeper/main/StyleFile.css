@@ -1,4 +1,4 @@
-#mypane{
+#backgroundPane{
 	-fx-background-color: radial-gradient(center 50.0% 50.0%, radius 100.0%, #242424, #434343, #898989);
 }
 #resetButton{
