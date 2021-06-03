@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="backgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ifdgmbh.mad.SimpleMinesweeper.controller.MinesweeperController">
+<AnchorPane fx:id="backgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ifdgmbh.mad.minesweeper.controller.MinesweeperController">
    <children>
       <AnchorPane fx:id="buttonPane" layoutX="65.0" layoutY="77.0" maxHeight="270.0" maxWidth="270.0" minHeight="270.0" minWidth="270.0" prefHeight="270.0" prefWidth="270.0" />
       <Label fx:id="topBar" maxHeight="26.0" maxWidth="400.0" minHeight="26.0" minWidth="400.0" prefHeight="26.0" prefWidth="400.0" text="SimpleMinesweeper" textFill="WHITE">
