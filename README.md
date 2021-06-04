@@ -1,1 +1,2 @@
-#Minesweeper
+# Minesweeper
+### JavaFX - Mini Application
