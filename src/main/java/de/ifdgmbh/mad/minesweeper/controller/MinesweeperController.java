@@ -1,12 +1,13 @@
 /* 
  * Copyright (c) 2021 iFD GmbH Chemnitz http://www.ifd-gmbh.com
  */
-package de.ifdgmbh.mad.SimpleMinesweeper.controller;
+package de.ifdgmbh.mad.minesweeper.controller;
 
 import java.security.SecureRandom;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.ifdgmbh.mad.minesweeper.util.ImageUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -14,7 +15,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -90,15 +90,16 @@ public class MinesweeperController {
 
 	private Timer timer;
 
+	@FXML
 	public void initialize() {
 		topBar.setStyle("-fx-background-color: #272727");
 		// set all Buttons
 		buttons = new Button[SIZE];
-		/** x position of the button */
+		/* x position of the button */
 		int pos_x = 0;
-		/** y position of the button */
+		/* y position of the button */
 		int pos_y = 0;
-		/** Button index */
+		/* Button index */
 		int index = 1;
 		for (int i = 1; i < 10; i++) {
 			for (int t = 1; t < 10; t++) {
@@ -182,8 +183,7 @@ public class MinesweeperController {
 		popUp.initModality(Modality.APPLICATION_MODAL);
 		popUp.setMinHeight(200);
 		popUp.setMinWidth(300);
-		popUp.getIcons().add(
-				new Image(getClass().getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/bombred.png").toString()));
+		popUp.getIcons().add(ImageUtils.getIconImage());
 
 		// configuring a label to show some text
 		Label label = new Label();
@@ -357,8 +357,7 @@ public class MinesweeperController {
 					// field is a bomb
 				} else if (fieldValue == 9) {
 					buttons[btnIndex].setBackground(bomb);
-					buttons[btnIndex].setGraphic(new ImageView(new Image(getClass()
-							.getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/bombred.png").toString())));
+					buttons[btnIndex].setGraphic(new ImageView(ImageUtils.getIconImage()));
 
 					// field is a zero, has no bomb nearby
 				} else {
@@ -431,8 +430,7 @@ public class MinesweeperController {
 			bombs++;
 		} else {
 			btn.setBackground(bomb);
-			btn.setGraphic(new ImageView(
-					new Image(getClass().getResource("/de/ifdgmbh/mad/SimpleMinesweeper/images/flag.png").toString())));
+			btn.setGraphic(new ImageView(ImageUtils.getFlagImage()));
 			bombs--;
 		}
 	}
@@ -440,6 +438,7 @@ public class MinesweeperController {
 	/**
 	 * Resets or starts the game depending on the game state
 	 */
+	@FXML
 	public void resetButtonClick() {
 		// visually reset all the fields
 		for (int i = 1; i < SIZE; i++) {
@@ -491,6 +490,7 @@ public class MinesweeperController {
 	/**
 	 * minimize the game
 	 */
+	@FXML
 	public void minButtonClicked() {
 		Stage tempStage = (Stage) backgroundPane.getScene().getWindow();
 		tempStage.setIconified(true);
@@ -499,6 +499,7 @@ public class MinesweeperController {
 	/**
 	 * close the game
 	 */
+	@FXML
 	public void closeButtonClicked() {
 		Stage temp = (Stage) backgroundPane.getScene().getWindow();
 		temp.close();
