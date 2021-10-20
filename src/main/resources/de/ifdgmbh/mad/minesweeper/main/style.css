@@ -35,3 +35,7 @@
 #closeButton:hover{
 	-fx-background-color: #FF0000;
 }
+
+#topBar{
+	-fx-background-color: #272727;
+}
