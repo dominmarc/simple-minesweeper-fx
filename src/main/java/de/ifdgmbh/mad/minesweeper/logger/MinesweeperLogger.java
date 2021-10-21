@@ -39,6 +39,8 @@ public class MinesweeperLogger {
 	static final String FILE_NAME = "SimpleMinesweeper";
 	/** file type */
 	static final String FILE_TYPE = ".log";
+	/** the string to replace with the specified strings */
+	static final String REPLACE_STR = "\\{\\}";
 
 	/**
 	 * Enumeration of all log levels.
@@ -110,7 +112,7 @@ public class MinesweeperLogger {
 
 	public void info(String s, Object... strings) {
 		for (int i = 0; i < strings.length; i++)
-			s = s.replaceFirst("\\{\\}", strings[i].toString());
+			s = s.replaceFirst(REPLACE_STR, strings[i].toString());
 
 		log(LEVEL.INFO, className, s);
 	}
@@ -126,7 +128,7 @@ public class MinesweeperLogger {
 
 	public void warn(String s, Object... strings) {
 		for (int i = 0; i < strings.length; i++)
-			s = s.replaceFirst("\\{\\}", strings[i].toString());
+			s = s.replaceFirst(REPLACE_STR, strings[i].toString());
 
 		log(LEVEL.WARN, className, s);
 	}
@@ -142,7 +144,7 @@ public class MinesweeperLogger {
 
 	public void error(String s, Object... strings) {
 		for (int i = 0; i < strings.length; i++)
-			s = s.replaceFirst("\\{\\}", strings[i].toString());
+			s = s.replaceFirst(REPLACE_STR, strings[i].toString());
 
 		log(LEVEL.ERROR, className, s);
 	}
@@ -156,6 +158,9 @@ public class MinesweeperLogger {
 		// start with date
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss ");
 		line.append(formatter.format(Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin")).getTime()));
+
+		// add log level
+		line.append(" - " + type + " - ");
 
 		// add class name
 		line.append(centerString(25, origin));

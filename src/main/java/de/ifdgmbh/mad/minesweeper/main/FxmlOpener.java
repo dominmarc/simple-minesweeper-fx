@@ -126,7 +126,7 @@ public class FxmlOpener {
 				this.stage.getScene().getStylesheets().add(style);
 
 		} catch (IOException e) {
-			LOGGER.error("IOException building fxml opener on file [{}] with: {}", fxmlFile, e.getMessage());
+			LOGGER.error("IOException building fxml opener on file [{}] with: {}", fxmlFile.getFile(), e.getMessage());
 			return false;
 		}
 		return true;

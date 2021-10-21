@@ -9,8 +9,8 @@ import java.util.TimerTask;
 import de.ifdgmbh.mad.minesweeper.helper.BasicGameFunctionsHelper;
 import de.ifdgmbh.mad.minesweeper.interfaces.IController;
 import de.ifdgmbh.mad.minesweeper.logger.MinesweeperLogger;
+import de.ifdgmbh.mad.minesweeper.main.ImageProvider;
 import de.ifdgmbh.mad.minesweeper.main.PopUp;
-import de.ifdgmbh.mad.minesweeper.util.ImageUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -251,7 +251,7 @@ public class MinesweeperController implements IController {
 			bombs++;
 		} else {
 			btn.setBackground(BasicGameFunctionsHelper.getBomb());
-			btn.setGraphic(new ImageView(ImageUtils.getFlagImage()));
+			btn.setGraphic(new ImageView(ImageProvider.getFlagIMG()));
 			bombs--;
 		}
 	}
@@ -436,7 +436,7 @@ public class MinesweeperController implements IController {
 					// field is a bomb
 				} else if (fieldValue == 9) {
 					buttons[btnIndex].setBackground(BasicGameFunctionsHelper.getBomb());
-					buttons[btnIndex].setGraphic(new ImageView(ImageUtils.getIconImage()));
+					buttons[btnIndex].setGraphic(new ImageView(ImageProvider.getBombRedIMG()));
 
 					// field is a zero, has no bomb nearby
 				} else {

@@ -59,11 +59,11 @@ public final class FileProvider {
 		localGame = Paths
 				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/minesweeper.fxml").toURI());
 		localGameStyle = Paths
-				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/SimpleDraughts/main/style.css").toURI());
+				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/style.css").toURI());
 
-		startForm = Paths.get(FileProvider.class.getResource("/de/ifdgmbh/mad/SimpleDraughts/main/start.fxml").toURI());
+		startForm = Paths.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/start.fxml").toURI());
 		startStyle = Paths
-				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/SimpleDraughts/main/startStyle.css").toURI());
+				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/startStyle.css").toURI());
 
 		// add all files here:
 		ArrayList<Path> files = new ArrayList<>();

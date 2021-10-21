@@ -51,14 +51,18 @@ public class MinesweeperMain extends Application {
 	 * about to open
 	 */
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		FxmlOpener newFXML = new FxmlOpener(FileProvider.getStartFileURL(), 0, null,
-				FileProvider.getStartStyleURL().toString());
+	public void start(Stage primaryStage) {
+		try {
+			FxmlOpener newFXML = new FxmlOpener(FileProvider.getStartFileURL(), 0, null,
+					FileProvider.getStartStyleURL().toString());
 
-		// open
-		if (!newFXML.open())
-			LOGGER.error("Error on opening file!");
-		else
-			LOGGER.info("Success...");
+			// open
+			if (!newFXML.open())
+				LOGGER.error("Error on opening file!");
+			else
+				LOGGER.info("Success...");
+		} catch (Exception e) {
+			LOGGER.error("Failed to build FxmlOpener - {}", e.getMessage());
+		}
 	}
 }
