@@ -24,6 +24,10 @@ public class ImageProvider {
 	private static Path bombRed;
 	/** flag image */
 	private static Path flag;
+	/** help image */
+	private static Path help;
+	/** back image */
+	private static Path back;
 
 	/** represents the status of the image provider */
 	private static boolean loaded;
@@ -56,11 +60,15 @@ public class ImageProvider {
 		// reference all files here:
 		bombRed = Paths.get(ImageProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/images/bombeRed.png").toURI());
 		flag = Paths.get(ImageProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/images/flag.png").toURI());
+		help = Paths.get(ImageProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/images/help.png").toURI());
+		back = Paths.get(ImageProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/images/back.png").toURI());
 
 		// add all files here:
 		ArrayList<Path> files = new ArrayList<>();
 		files.add(bombRed);
 		files.add(flag);
+		files.add(help);
+		files.add(back);
 
 		for (Path p : files)
 			if (!load(p)) {
@@ -93,6 +101,24 @@ public class ImageProvider {
 	public static Image getFlagIMG() {
 		try {
 			return new Image(flag.toUri().toURL().toString());
+		} catch (MalformedURLException e) {
+			LOGGER.error("", e);
+			return null;
+		}
+	}
+
+	public static Image getHelpIMG() {
+		try {
+			return new Image(help.toUri().toURL().toString());
+		} catch (MalformedURLException e) {
+			LOGGER.error("", e);
+			return null;
+		}
+	}
+
+	public static Image getBackIMG() {
+		try {
+			return new Image(back.toUri().toURL().toString());
 		} catch (MalformedURLException e) {
 			LOGGER.error("", e);
 			return null;

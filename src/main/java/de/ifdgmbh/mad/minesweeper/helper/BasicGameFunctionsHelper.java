@@ -1,3 +1,6 @@
+/* 
+ * Copyright (c) 2021 iFD GmbH Chemnitz http://www.ifd-gmbh.com
+ */
 package de.ifdgmbh.mad.minesweeper.helper;
 
 import java.security.SecureRandom;
@@ -5,6 +8,7 @@ import java.security.SecureRandom;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 /**
@@ -39,19 +43,19 @@ public class BasicGameFunctionsHelper {
 	/**
 	 * Returns a fresh generated gamefield.
 	 * 
-	 * @param SIZE represents the number of fields in the game
+	 * @param SIZE  represents the number of fields in the game
+	 * @param BOMBS represents the number of bombs in the game
 	 */
-	public static int[][] buildGamefield(final int SIZE) {
+	public static int[][] buildGamefield(final int SIZE, final int BOMBS) {
 		// gamefield = (length + 2) X (length + 2)
 		// +2 because initialized with (-1) frame
 		final int length = (int) Math.sqrt(SIZE);
 
 		int[][] gamefield = new int[length + 2][length + 2];
 
-		// create 10 bombs
+		// create bombs
 		SecureRandom rand = new SecureRandom();
-		int bombs = 10;
-		for (int k = 1; k <= bombs; k++) {
+		for (int k = 1; k <= BOMBS; k++) {
 			int var1;
 			int var2;
 			do {
@@ -61,18 +65,19 @@ public class BasicGameFunctionsHelper {
 			gamefield[var1][var2] = 9;
 		}
 
+		/** the number of bombs around the field */
 		int bombCounter = 0;
 
 		// loop through all fields
-		for (int y = 1; y < 10; y++) {
-			for (int x = 1; x < 10; x++) {
+		for (int y = 1; y <= length; y++) {
+			for (int x = 1; x <= length; x++) {
 				// if field is a bomb (9) we can skip the field
 				if (gamefield[x][y] != 9) {
 					// loop through [][] around the current field (around x and around y)
-					for (int around_y = y - 1; around_y <= y + 1; around_y++) {
-						for (int around_x = x - 1; around_x <= x + 1; around_x++) {
+					for (int aroundY = y - 1; aroundY <= y + 1; aroundY++) {
+						for (int aroundX = x - 1; aroundX <= x + 1; aroundX++) {
 							// check if there is a bomb
-							if (gamefield[around_x][around_y] == 9) {
+							if (gamefield[aroundX][aroundY] == 9) {
 								bombCounter++;
 							}
 						}
@@ -85,18 +90,52 @@ public class BasicGameFunctionsHelper {
 		}
 
 		// print field && initialize the frame with -1 (0, 10)
-		for (int g = 0; g < 11; g++) {
-			for (int h = 0; h < 11; h++) {
-				if (g == 0 || g == 10) {
+		for (int g = 0; g <= (length + 1); g++) {
+			for (int h = 0; h <= (length + 1); h++) {
+				if (g == 0 || g == (length + 1)) {
 					gamefield[h][g] = -1;
 				}
-				if (h == 0 || h == 10) {
+				if (h == 0 || h == (length + 1)) {
 					gamefield[h][g] = -1;
 				}
 			}
 		}
 
 		return gamefield;
+	}
+
+	/**
+	 * Function to set an absolute size setting to a node.
+	 * 
+	 * @param node   the element to set the size
+	 * @param width
+	 * @param height
+	 * 
+	 * @return the size edited not
+	 */
+	public static Region fixSize(Region node, double width, double height) {
+		node.setMinSize(width, height);
+		node.setMaxSize(width, height);
+		node.setPrefSize(width, height);
+		return node;
+	}
+
+	/**
+	 * Function to set an absolute location to a node.</br>
+	 * Along with that sets id to identify in style-file.
+	 * 
+	 * @param node the element to set the location
+	 * @param x    coordinate of location
+	 * @param y    coordinate of location
+	 * 
+	 * @return the location edited node
+	 */
+	public static Region fixLoc(Region node, String id, double x, double y) {
+		node.setLayoutX(x);
+		node.setLayoutY(y);
+		// set id
+		node.setId(id);
+		return node;
 	}
 
 	public static String getPrintBar() {
@@ -118,7 +157,7 @@ public class BasicGameFunctionsHelper {
 	}
 
 	/**
-	 * Background to visually show a bomb
+	 * Background to visually show a bomb (red)
 	 */
 	public static Background getBomb() {
 		return BOMB;

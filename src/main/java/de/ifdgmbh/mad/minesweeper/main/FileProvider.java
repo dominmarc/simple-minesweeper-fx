@@ -18,8 +18,6 @@ import de.ifdgmbh.mad.minesweeper.logger.MinesweeperLogger;
  * @author MAD
  */
 public final class FileProvider {
-	/** game window */
-	private static Path localGame;
 	/** Style file for game */
 	private static Path localGameStyle;
 	/** start window */
@@ -56,8 +54,6 @@ public final class FileProvider {
 		LOGGER.info("Loading game files...");
 
 		// reference all files here:
-		localGame = Paths
-				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/minesweeper.fxml").toURI());
 		localGameStyle = Paths
 				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/style.css").toURI());
 
@@ -67,7 +63,6 @@ public final class FileProvider {
 
 		// add all files here:
 		ArrayList<Path> files = new ArrayList<>();
-		files.add(localGame);
 		files.add(localGameStyle);
 		files.add(startForm);
 		files.add(startStyle);
@@ -91,10 +86,6 @@ public final class FileProvider {
 		return Files.exists(path);
 	}
 
-	public static Path getGameFile() {
-		return localGame;
-	}
-
 	public static Path getGameStyleFile() {
 		return localGameStyle;
 	}
@@ -105,15 +96,6 @@ public final class FileProvider {
 
 	public static Path getStartStyle() {
 		return startStyle;
-	}
-
-	public static URL getGameFileURL() {
-		try {
-			return localGame.toUri().toURL();
-		} catch (MalformedURLException e) {
-			LOGGER.error("", e);
-			return null;
-		}
 	}
 
 	public static URL getGameStyleFileURL() {

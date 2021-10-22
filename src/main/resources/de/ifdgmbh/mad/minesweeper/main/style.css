@@ -1,6 +1,8 @@
 #backgroundPane{
 	-fx-background-color: radial-gradient(center 50.0% 50.0%, radius 100.0%, #242424, #434343, #898989);
 }
+
+
 #resetButton{
 	-fx-background-color: #090a0c,
 		linear-gradient(#38424b 0.0%, #1f2429 20.0%, #191d22 100.0%),
@@ -23,19 +25,78 @@
 		radial-gradient(center 50.0% 0.0%, radius 100.0%, rgba(114.0, 131.0, 148.0, 0.9),
 		rgba(255.0, 255.0, 255.0, 0.0));
 }
+
+
 #minButton{
+	-fx-text-fill: white;
+	-fx-font-size: 12.0px;
 	-fx-background-color: #272727;
 }
 #minButton:hover{
 	-fx-background-color: #4B4B4B;
 }
+
+
 #closeButton{
+	-fx-text-fill: white;
+	-fx-font-size: 13.0px;
 	-fx-background-color: #272727;
 }
 #closeButton:hover{
 	-fx-background-color: #FF0000;
 }
 
+
+#helpButton{
+	-fx-background-color: radial-gradient(center 25.0% 75.0%, radius 90.0%, #FFE000, #FFBB00, #ffa500);
+	-fx-background-insets:0.0px;
+	-fx-border-color: Black;
+	-fx-border-width: 2.0px;
+}
+#helpButton:hover{
+	-fx-background-color: #FFDD00,
+		radial-gradient(center 50.0% 0.0%, radius 100.0%, rgba(255.0, 243.0, 90.0, 0.9),
+		rgba(255.0, 165.0, 0.0, 0.7));
+}
+#helpButton:pressed{
+	-fx-background-color: rgba(255.0,221.0,0.0,0.5),
+		radial-gradient(center 50.0% 0.0%, radius 100.0%, rgba(255.0, 243.0, 90.0, 0.9),
+		rgba(255.0, 165.0, 0.0, 0.7));
+}
+
+
+#backButton{
+	-fx-background-color: radial-gradient(center 25.0% 75.0%, radius 90.0%, #FFE000, #FFBB00, #ffa500);
+	-fx-background-insets:0.0px;
+	-fx-border-color: Black;
+	-fx-border-width: 2.0px;
+}
+#backButton:hover{
+	-fx-background-color: #FFDD00,
+		radial-gradient(center 50.0% 0.0%, radius 100.0%, rgba(255.0, 243.0, 90.0, 0.9),
+		rgba(255.0, 165.0, 0.0, 0.7));
+}
+#backButton:pressed{
+	-fx-background-color: rgba(255.0,221.0,0.0,0.5),
+		radial-gradient(center 50.0% 0.0%, radius 100.0%, rgba(255.0, 243.0, 90.0, 0.9),
+		rgba(255.0, 165.0, 0.0, 0.7));
+}
+
+
 #topBar{
+	-fx-font-size: 17.0px;
 	-fx-background-color: #272727;
+	-fx-text-fill: white;
+}
+
+
+#timeLabel{
+	-fx-text-fill: white;
+	-fx-font-size: 16.0px;
+}
+
+
+#bombsLabel{
+	-fx-text-fill: white;
+	-fx-font-size: 16.0px;
 }

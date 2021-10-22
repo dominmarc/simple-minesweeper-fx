@@ -43,24 +43,15 @@ public class StartController implements IController {
 	 * Click on start button
 	 */
 	public void startButtonClicked() {
-		try {
-			FxmlOpener newFXML = new FxmlOpener(FileProvider.getGameFileURL(), 0, null,
-					FileProvider.getGameStyleFileURL().toString());
 
-			newFXML.setInitialValue("");
-
-			// open
-			if (!newFXML.open())
-				LOGGER.error("Error on opening file!");
-			else {
-				LOGGER.info("Success... closing start window...");
-				Stage me = (Stage) mainPane.getScene().getWindow();
-				me.close();
-			}
-		} catch (Exception e) {
-			LOGGER.error("Exception: {} -> {}", e.getClass().getName(), e.getMessage());
+		Game game = new Game("0300000000");
+		if (!game.start()) {
 			infoUser("A problem occured!\nCannot start game.");
+			return;
 		}
+		LOGGER.info("Success... closing start window...");
+		Stage me = (Stage) mainPane.getScene().getWindow();
+		me.close();
 	}
 
 	/**
