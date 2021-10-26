@@ -3,7 +3,6 @@
  */
 package de.ifdgmbh.mad.minesweeper.main;
 
-import java.io.IOException;
 import java.net.URL;
 
 import de.ifdgmbh.mad.minesweeper.interfaces.IController;
@@ -125,8 +124,10 @@ public class FxmlOpener {
 			if (!style.isBlank())
 				this.stage.getScene().getStylesheets().add(style);
 
-		} catch (IOException e) {
-			LOGGER.error("IOException building fxml opener on file [{}] with: {}", fxmlFile.getFile(), e.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("{} building fxml opener on file [{}] with: {}", e.getClass().getName(), fxmlFile.getFile(),
+					e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 		return true;

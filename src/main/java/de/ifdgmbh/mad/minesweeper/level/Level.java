@@ -101,6 +101,28 @@ public class Level {
 	}
 
 	/**
+	 * Returns the level object based on the specified type.</br>
+	 * Note: type "Custom" will return null! </br>
+	 * To get a custom level call {@link getCustomLevel} !</br>
+	 * 
+	 * @param type the type of level
+	 * 
+	 * @return Level object according to type
+	 */
+	public static Level getLevel(LevelType type) {
+		switch (type) {
+		case EASY:
+			return getEasyLevel();
+		case INTERMEDIATE:
+			return getIntermediateLevel();
+		case HARD:
+			return getHardLevel();
+		default:
+			return null;
+		}
+	}
+
+	/**
 	 * Returns the number of bombs.
 	 */
 	public int getBombCount() {
@@ -119,6 +141,13 @@ public class Level {
 	 */
 	public int getFieldLength() {
 		return (int) Math.sqrt(fields);
+	}
+
+	/**
+	 * Returns the number of fields per column/ row
+	 */
+	public static int getFieldLength(int num) {
+		return (int) Math.sqrt(num);
 	}
 
 	/**

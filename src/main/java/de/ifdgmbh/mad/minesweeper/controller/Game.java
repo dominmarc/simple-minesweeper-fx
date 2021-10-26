@@ -7,7 +7,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.ifdgmbh.mad.minesweeper.helper.BasicGameFunctionsHelper;
-import de.ifdgmbh.mad.minesweeper.level.Level;
 import de.ifdgmbh.mad.minesweeper.logger.MinesweeperLogger;
 import de.ifdgmbh.mad.minesweeper.main.FileProvider;
 import de.ifdgmbh.mad.minesweeper.main.FxmlOpener;
@@ -24,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -72,11 +72,10 @@ public class Game {
 	/** Value representing the number of bombs left */
 	private int bombsLeft = 10;
 
-	/** game level/ difficulty */
-	private static Level level;
+	/** game settings */
+	private static Settings settings;
 
 	private Timer timer;
-	private int maxTimer = 0;
 
 	/** SIZE (x & y) of each button/ game field */
 	static final int BUTTON_SIZE = 30;
@@ -95,31 +94,33 @@ public class Game {
 //==																								==	
 //====================================================================================================		
 
-	public Game(String value) {
-		initialize(value);
+	public Game(Settings setting) {
+		initialize(setting);
 	}
 
-	public void parseSettings(String value) {
+	public void parseSettings(Settings setting) {
 		// parse the input data
-		if ((level = setUpGame(value)) == null) {
+		if (checkSettings(setting))
+			settings = setting;
+		else {
 			LOGGER.error("Could not set up game!");
 			infoUser("Could not set up game!\nStarting in easy mode!");
-			level = Level.getEasyLevel();
+			settings = Settings.getEasySettings();
 		}
 	}
 
-	public void initialize(String value) {
+	public void initialize(Settings setting) {
 		LOGGER.info(BasicGameFunctionsHelper.getPrintBar());
 		LOGGER.info("==============Local Multiplayer===============");
 		LOGGER.info(BasicGameFunctionsHelper.getPrintBar());
 		LOGGER.info("Starting initialization...");
 
 		this.window = new Stage();
-		parseSettings(value);
+		parseSettings(setting);
 		buildGameWindow();
 
 		LOGGER.info("Starting to build the gamefield...");
-		buildGameFields(level.getFieldCount());
+		buildGameFields(setting.getFields());
 		LOGGER.info("Finished building gamefield!");
 
 		LOGGER.info("Initialization finished!");
@@ -131,7 +132,7 @@ public class Game {
 		buttons = new Button[fieldSize + 1];
 
 		// get number of fields per column/ row (and add 2 for frame)
-		final int LENGTH = level.getFieldLength();
+		final int LENGTH = settings.getFieldLength();
 
 		// build all buttons (sqrt(SIZE) gamefield)
 		LOGGER.info("Building the gamefield... with {} fields...", String.valueOf(fieldSize));
@@ -180,8 +181,8 @@ public class Game {
 		buttonPane.getChildren().add(buttons[index]);
 		buttons[index].setLayoutX(posX);
 		buttons[index].setLayoutY(posY);
-		buttons[index].setPrefWidth(30);
-		buttons[index].setPrefHeight(30);
+		buttons[index].setPrefWidth(BUTTON_SIZE);
+		buttons[index].setPrefHeight(BUTTON_SIZE);
 		buttons[index].setPadding(fieldButtonInsets);
 		buttons[index].setStyle("-fx-font-size: 17px; -fx-font-weight: bold;");
 		buttons[index].setBackground(BasicGameFunctionsHelper.getChecked());
@@ -294,8 +295,8 @@ public class Game {
 			return;
 
 		int idx = 0;
-		for (int y = 1; y <= level.getFieldLength(); y++)
-			for (int x = 1; x <= level.getFieldLength(); x++) {
+		for (int y = 1; y <= settings.getFieldLength(); y++)
+			for (int x = 1; x <= settings.getFieldLength(); x++) {
 				idx++;
 				if (gamefield[x][y] == 0 && isUnchecked(buttons[idx])) {
 					openFields(idx, x, y);
@@ -329,14 +330,14 @@ public class Game {
 	 */
 	private void resetButtonClicked() {
 		// visually reset all the fields
-		for (int i = 1; i <= level.getFieldCount(); i++) {
+		for (int i = 1; i <= settings.getFields(); i++) {
 			buttons[i].setBackground(BasicGameFunctionsHelper.getUnchecked());
 			buttons[i].setGraphic(null);
 			buttons[i].setText("");
 		}
 
 		// reset the number of bombs
-		bombsLeft = level.getBombCount();
+		bombsLeft = settings.getBombs();
 		bombsLabel.setText("Bombs: " + bombsLeft);
 
 		if (running) {
@@ -380,7 +381,7 @@ public class Game {
 	 * And ends the game if it should.
 	 */
 	public boolean checkEnd() {
-		for (int i = 1; i <= level.getFieldCount(); i++) {
+		for (int i = 1; i <= settings.getFields(); i++) {
 			if (isUnchecked(buttons[i])) {
 				return false;
 			}
@@ -395,50 +396,37 @@ public class Game {
 	}
 
 	/**
-	 * Parses the passed message and sets the game up.</br>
-	 * Initializes the level.</br>
-	 * Restrictions for timer. (if TTTT)</br>
-	 * Note that we assume here, that all data is valid. We just look for msg
-	 * validity.</br>
+	 * Checks the validity of the passed setting.
 	 * 
-	 * @param msg the message to be parsed</br>
-	 *            Format: |XX|YY|ZZ|TTTT|</br>
-	 *            XX - level (01/02/03/04)</br>
-	 *            YY - number fields per row and column</br>
-	 *            ZZ - number bombs</br>
-	 *            TTTT - time in seconds (2 - 9999)</br>
+	 * @param setting the settings to check
 	 * 
-	 * @return true on success, false on failure
+	 * @return true if correct settings or false if incorrect
 	 */
-	private Level setUpGame(String msg) {
-		LOGGER.info("Parsing [{}]...", msg);
-		if (msg.length() != 10) {
-			LOGGER.error("String length ({}) invalid!", String.valueOf(msg.length()));
-			return null;
-		}
-		try {
-			// set max timer
-			this.maxTimer = Integer.parseInt(msg.substring(6));
+	public boolean checkSettings(Settings setting) {
 
-			// set the level
-			switch (msg.substring(0, 2)) {
-			case "01":
-				return Level.getEasyLevel();
-			case "02":
-				return Level.getIntermediateLevel();
-			case "03":
-				return Level.getHardLevel();
-			case "04":
-				final int bombCount = Integer.parseInt(msg.substring(2, 4));
-				final int fieldCount = Integer.parseInt(msg.substring(4, 6));
-				return Level.getCustomLevel(bombCount, fieldCount);
-			default:
-				return null;
-			}
-		} catch (NumberFormatException e) {
-			LOGGER.info("NumberFormatException while parsing! - {}", e.getMessage());
-			return null;
-		}
+		if (setting.getMaxTimer() < 0 || setting.getMaxTimer() > 9999 || setting.getMaxTimer() == 1)
+			return false;
+
+		if (setting.getFields() <= setting.getBombs())
+			return false;
+
+		// number of fields
+		int maxLen = (int) (Screen.getPrimary().getBounds().getHeight() - 120) / BUTTON_SIZE;
+
+		if (settings.getFieldLength() * settings.getFieldLength() != settings.getFields())
+			return false;
+
+		if (setting.getFieldLength() > maxLen)
+			return false;
+
+		if (setting.getFields() < 4)
+			return false;
+
+		// number of bombs
+		if (setting.getBombs() <= 0)
+			return false;
+
+		return true;
 	}
 
 	/**
@@ -447,14 +435,26 @@ public class Game {
 	 * @return Stage Object representing the game
 	 */
 	private void buildGameWindow() {
-		final int BUTTON_PANE_SIZE = level.getFieldLength() * BUTTON_SIZE;
-		final int WINDOW_WIDTH = BUTTON_PANE_SIZE + (2 * 65);
+		/** size of button pane (gamefield) */
+		final int BUTTON_PANE_SIZE = settings.getFieldLength() * BUTTON_SIZE;
+		/** width of total window */
+		int WINDOW_WIDTH = BUTTON_PANE_SIZE + (2 * 65);
+		// make it at least 400
+		if (WINDOW_WIDTH < 400)
+			WINDOW_WIDTH = 400;
+		/** height of total window */
 		final int WINDOW_HEIGHT = 80 + BUTTON_PANE_SIZE + 40;
+		/** height of title bar */
 		final int topBarHeight = 26;
 		final int resetButtonHeight = 35;
+		/** width of min and close button in title bar */
 		final int titleButtonsWidth = 30;
+		/** height of bombs and timer label */
 		final int labelHeight = 20;
+		/** width of bombs and timer label */
 		final int labelWidth = 100;
+		/** layout y of button pane (gamefield) */
+		final int BUTTON_PANE_Y = topBarHeight + resetButtonHeight + 19;
 		// timeLabel layout x
 		final double timeLLayX = (WINDOW_WIDTH / 4.0) - (labelWidth / 2.0);
 
@@ -471,13 +471,13 @@ public class Game {
 		/** button to return to the home menu */
 		Button backButton = new Button();
 		timeLabel = new Label("Time: 0");
-		bombsLabel = new Label("Bombs: " + level.getBombCount());
+		bombsLabel = new Label("Bombs: " + settings.getBombs());
 		topBar = new Label("SimpleMinesweeper");
 
 		// panes
 		buttonPane = (AnchorPane) BasicGameFunctionsHelper.fixSize(buttonPane, BUTTON_PANE_SIZE, BUTTON_PANE_SIZE);
 		buttonPane = (AnchorPane) BasicGameFunctionsHelper.fixLoc(buttonPane, "buttonPane",
-				(WINDOW_WIDTH / 2.0) - (BUTTON_PANE_SIZE / 2.0), 80);
+				(WINDOW_WIDTH / 2.0) - (BUTTON_PANE_SIZE / 2.0), BUTTON_PANE_Y);
 
 		backgroundPane = (AnchorPane) BasicGameFunctionsHelper.fixSize(backgroundPane, WINDOW_WIDTH, WINDOW_HEIGHT);
 		backgroundPane = (AnchorPane) BasicGameFunctionsHelper.fixLoc(backgroundPane, "backgroundPane", 0, 0);
@@ -490,9 +490,13 @@ public class Game {
 			resetButtonClicked();
 		});
 
+		/** layout y for 2 game buttons: help, back */
+		int buttonY = topBarHeight + 9;
+		if (WINDOW_WIDTH < 490)
+			buttonY = BUTTON_PANE_Y;
 		helpButton = (Button) BasicGameFunctionsHelper.fixSize(helpButton, resetButtonHeight, resetButtonHeight);
 		helpButton = (Button) BasicGameFunctionsHelper.fixLoc(helpButton, "helpButton",
-				((WINDOW_WIDTH / 2.0) - (BUTTON_PANE_SIZE / 2.0) - resetButtonHeight) / 2, topBarHeight + 9.0);
+				((WINDOW_WIDTH / 2.0) - (BUTTON_PANE_SIZE / 2.0) - resetButtonHeight) / 2, buttonY);
 		helpButton.setGraphic(new ImageView(ImageProvider.getHelpIMG()));
 		helpButton.setOnMouseClicked(e -> {
 			helpButtonClicked();
@@ -501,7 +505,7 @@ public class Game {
 		backButton = (Button) BasicGameFunctionsHelper.fixSize(backButton, resetButtonHeight, resetButtonHeight);
 		backButton = (Button) BasicGameFunctionsHelper.fixLoc(backButton, "backButton",
 				buttonPane.getLayoutX() + BUTTON_PANE_SIZE + (buttonPane.getLayoutX() / 2 - resetButtonHeight / 2.0),
-				topBarHeight + 9.0);
+				buttonY);
 		backButton.setGraphic(new ImageView(ImageProvider.getBackIMG()));
 		backButton.setOnMouseClicked(e -> {
 			backButtonClicked();
@@ -600,10 +604,10 @@ public class Game {
 	}
 
 	/**
-	 * set gamefield with 10 bombs and all values
+	 * set gamefield with level-based bombs and all values
 	 */
 	public void createField() {
-		gamefield = BasicGameFunctionsHelper.buildGamefield(level.getFieldCount(), level.getBombCount());
+		gamefield = BasicGameFunctionsHelper.buildGamefield(settings.getFields(), settings.getBombs());
 	}
 
 	/**
@@ -615,17 +619,18 @@ public class Game {
 	 * @param y        representing the y value of the button in gamefield array
 	 */
 	public void openFields(int btnIndex, int x, int y) {
+		int fieldLength = settings.getFieldLength();
 		// up
 		if (gamefield[x][y - 1] == 0) {
 			gamefield[x][y - 1] = -1;
-			buttons[btnIndex - level.getFieldLength()].setBackground(getChecked());
-			openFields(btnIndex - level.getFieldLength(), x, y - 1);
+			buttons[btnIndex - fieldLength].setBackground(getChecked());
+			openFields(btnIndex - fieldLength, x, y - 1);
 		}
 		// right up
 		if (gamefield[x + 1][y - 1] == 0) {
 			gamefield[x + 1][y - 1] = -1;
-			buttons[btnIndex - level.getFieldLength() + 1].setBackground(getChecked());
-			openFields(btnIndex - level.getFieldLength() + 1, x + 1, y - 1);
+			buttons[btnIndex - fieldLength + 1].setBackground(getChecked());
+			openFields(btnIndex - fieldLength + 1, x + 1, y - 1);
 		}
 		// right
 		if (gamefield[x + 1][y] == 0) {
@@ -636,20 +641,20 @@ public class Game {
 		// right down
 		if (gamefield[x + 1][y + 1] == 0) {
 			gamefield[x + 1][y + 1] = -1;
-			buttons[btnIndex + level.getFieldLength() + 1].setBackground(getChecked());
-			openFields(btnIndex + level.getFieldLength() + 1, x + 1, y + 1);
+			buttons[btnIndex + fieldLength + 1].setBackground(getChecked());
+			openFields(btnIndex + fieldLength + 1, x + 1, y + 1);
 		}
 		// down
 		if (gamefield[x][y + 1] == 0) {
 			gamefield[x][y + 1] = -1;
-			buttons[btnIndex + level.getFieldLength()].setBackground(getChecked());
-			openFields(btnIndex + level.getFieldLength(), x, y + 1);
+			buttons[btnIndex + fieldLength].setBackground(getChecked());
+			openFields(btnIndex + fieldLength, x, y + 1);
 		}
 		// left down
 		if (gamefield[x - 1][y + 1] == 0) {
 			gamefield[x - 1][y + 1] = -1;
-			buttons[btnIndex + level.getFieldLength() - 1].setBackground(getChecked());
-			openFields(btnIndex + level.getFieldLength() - 1, x - 1, y + 1);
+			buttons[btnIndex + fieldLength - 1].setBackground(getChecked());
+			openFields(btnIndex + fieldLength - 1, x - 1, y + 1);
 		}
 		// left
 		if (gamefield[x - 1][y] == 0) {
@@ -660,8 +665,8 @@ public class Game {
 		// left up
 		if (gamefield[x - 1][y - 1] == 0) {
 			gamefield[x - 1][y - 1] = -1;
-			buttons[btnIndex - level.getFieldLength() - 1].setBackground(getChecked());
-			openFields(btnIndex - level.getFieldLength() - 1, x - 1, y - 1);
+			buttons[btnIndex - fieldLength - 1].setBackground(getChecked());
+			openFields(btnIndex - fieldLength - 1, x - 1, y - 1);
 		}
 
 	}
@@ -672,8 +677,8 @@ public class Game {
 	 */
 	public void showSolution() {
 		int btnIndex = 1;
-		for (int y = 1; y <= level.getFieldLength(); y++) {
-			for (int x = 1; x <= level.getFieldLength(); x++) {
+		for (int y = 1; y <= settings.getFieldLength(); y++) {
+			for (int x = 1; x <= settings.getFieldLength(); x++) {
 				// Value of the field, representing how many bombs are around the field or if it
 				// is a bomb
 				int fieldValue = gamefield[x][y];
@@ -717,10 +722,19 @@ public class Game {
 
 			@Override
 			public void run() {
-				counter[0]++;
-				Platform.runLater(() -> {
-					timeLabel.setText("Time: " + counter[0]);
-				});
+				if (running) {
+					counter[0]++;
+					if (settings.getMaxTimer() != 0 && counter[0] >= settings.getMaxTimer()) {
+						running = false;
+						timer.cancel();
+						Platform.runLater(() -> {
+							infoUser("Time is over, you lost!");
+						});
+					}
+					Platform.runLater(() -> {
+						timeLabel.setText("Time: " + counter[0]);
+					});
+				}
 			}
 		};
 

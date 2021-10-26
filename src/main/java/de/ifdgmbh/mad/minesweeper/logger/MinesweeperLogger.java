@@ -160,7 +160,7 @@ public class MinesweeperLogger {
 		line.append(formatter.format(Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin")).getTime()));
 
 		// add log level
-		line.append(centerString(10, " - " + type + " - "));
+		line.append(centerString(11, " - " + type + ": "));
 
 		// add class name
 		line.append(centerString(25, origin));

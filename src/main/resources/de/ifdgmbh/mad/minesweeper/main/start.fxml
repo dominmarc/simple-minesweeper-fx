@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ifdgmbh.mad.minesweeper.controller.StartController">
+<AnchorPane fx:id="mainPane" maxHeight="320.0" maxWidth="510.0" minHeight="320.0" minWidth="510.0" prefHeight="320.0" prefWidth="510.0" stylesheets="@startStyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ifdgmbh.mad.minesweeper.controller.StartController">
    <children>
-      <Button fx:id="startButton" layoutX="268.0" layoutY="185.0" mnemonicParsing="false" onMouseClicked="#startButtonClicked" text="OPEN" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="213.0" layoutX="24.0" layoutY="39.0" stroke="BLACK" strokeType="INSIDE" width="212.0" />
+      <AnchorPane fx:id="buttonPane" layoutX="285.0" layoutY="76.0" maxHeight="180.0" maxWidth="180.0" minHeight="180.0" minWidth="180.0" prefHeight="180.0" prefWidth="180.0" />
+      <Button fx:id="startButton" layoutX="84.0" layoutY="260.0" mnemonicParsing="false" onMouseClicked="#startButtonClicked" text="START" />
+      <Label fx:id="topBar" maxHeight="26.0" maxWidth="510.0" minHeight="26.0" minWidth="510.0" prefHeight="26.0" prefWidth="510.0" text="Menu" textFill="WHITE">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Button fx:id="minButton" layoutX="450.0" maxHeight="25.0" maxWidth="30.0" minHeight="25.0" minWidth="30.0" mnemonicParsing="false" onMouseClicked="#minButtonClick" prefHeight="25.0" prefWidth="30.0" text="_" textFill="WHITE">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="closeButton" layoutX="480.0" maxHeight="25.0" maxWidth="30.0" minHeight="25.0" minWidth="30.0" mnemonicParsing="false" onMouseClicked="#closeButtonClick" prefHeight="25.0" prefWidth="30.0" text="X" textFill="WHITE">
+         <font>
+            <Font name="Berlin Sans FB" size="13.0" />
+         </font>
+      </Button>
+      <Button fx:id="resetButton" layoutX="343.0" layoutY="260.0" mnemonicParsing="false" onMouseClicked="#resetButtonClicked" text="RESET" />
+      <TextField fx:id="txtBombs" layoutX="55.0" layoutY="211.0" prefHeight="31.0" prefWidth="150.0" promptText="Number Of Bombs" />
+      <TextField fx:id="txtFields" layoutX="145.0" layoutY="166.0" prefHeight="31.0" prefWidth="80.0" promptText="Fields" />
+      <TextField fx:id="txtTime" layoutX="66.0" layoutY="103.0" prefHeight="31.0" prefWidth="128.0" promptText="Max. Time" />
+      <Label layoutX="250.0" layoutY="39.0" text="Simple Minesweeper" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="22.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="levelSelection" layoutX="55.0" layoutY="55.0" prefHeight="31.0" prefWidth="150.0" promptText="Select Level" />
+      <ComboBox fx:id="fieldSelection" layoutX="36.0" layoutY="166.0" prefHeight="31.0" prefWidth="94.0" promptText="Select" />
    </children>
 </AnchorPane>

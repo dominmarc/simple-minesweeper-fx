@@ -53,6 +53,9 @@ public class BasicGameFunctionsHelper {
 
 		int[][] gamefield = new int[length + 2][length + 2];
 
+		if (BOMBS >= SIZE)
+			return gamefield;
+
 		// create bombs
 		SecureRandom rand = new SecureRandom();
 		for (int k = 1; k <= BOMBS; k++) {
@@ -125,6 +128,7 @@ public class BasicGameFunctionsHelper {
 	 * Along with that sets id to identify in style-file.
 	 * 
 	 * @param node the element to set the location
+	 * @param id   the id to be set to the node
 	 * @param x    coordinate of location
 	 * @param y    coordinate of location
 	 * 
