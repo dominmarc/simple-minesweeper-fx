@@ -24,6 +24,8 @@ public final class FileProvider {
 	private static Path startForm;
 	/** Style file for start window */
 	private static Path startStyle;
+	/** Style for combo-boxes in start window */
+	private static Path comboBoxStyle;
 
 	/** represents the status of the file provider */
 	private static boolean loaded;
@@ -60,12 +62,15 @@ public final class FileProvider {
 		startForm = Paths.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/start.fxml").toURI());
 		startStyle = Paths
 				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/startStyle.css").toURI());
+		comboBoxStyle = Paths
+				.get(FileProvider.class.getResource("/de/ifdgmbh/mad/minesweeper/main/comboBoxStyle.css").toURI());
 
 		// add all files here:
 		ArrayList<Path> files = new ArrayList<>();
 		files.add(localGameStyle);
 		files.add(startForm);
 		files.add(startStyle);
+		files.add(comboBoxStyle);
 
 		for (Path p : files)
 			if (!load(p)) {
@@ -98,6 +103,10 @@ public final class FileProvider {
 		return startStyle;
 	}
 
+	public static Path getcomboBoxStyle() {
+		return comboBoxStyle;
+	}
+
 	public static URL getGameStyleFileURL() {
 		try {
 			return localGameStyle.toUri().toURL();
@@ -119,6 +128,15 @@ public final class FileProvider {
 	public static URL getStartStyleURL() {
 		try {
 			return startStyle.toUri().toURL();
+		} catch (MalformedURLException e) {
+			LOGGER.error("", e);
+			return null;
+		}
+	}
+
+	public static URL getcomboBoxStyleURL() {
+		try {
+			return comboBoxStyle.toUri().toURL();
 		} catch (MalformedURLException e) {
 			LOGGER.error("", e);
 			return null;

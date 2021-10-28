@@ -8,6 +8,7 @@ import de.ifdgmbh.mad.minesweeper.interfaces.IController;
 import de.ifdgmbh.mad.minesweeper.level.Level;
 import de.ifdgmbh.mad.minesweeper.level.Level.LevelType;
 import de.ifdgmbh.mad.minesweeper.logger.MinesweeperLogger;
+import de.ifdgmbh.mad.minesweeper.main.FileProvider;
 import de.ifdgmbh.mad.minesweeper.main.ImageProvider;
 import de.ifdgmbh.mad.minesweeper.main.PopUp;
 import javafx.fxml.FXML;
@@ -124,14 +125,18 @@ public class StartController implements IController {
 		});
 		// field method selection
 		fieldSelection.getItems().addAll("OFFSET", "NUMBER");
+
+		// apply combo box style
+		fieldSelection.getStylesheets().add(FileProvider.getcomboBoxStyleURL().toString());
+		levelSelection.getStylesheets().add(FileProvider.getcomboBoxStyleURL().toString());
 	}
 
 	/**
 	 * Click on start button/ starts the game/ checks for correct start conditions
 	 */
 	public void startButtonClicked() {
-		Settings setting;
-		if ((setting = createSettings()) == null)
+		Settings setting = createSettings();
+		if (setting == null)
 			return;
 
 		Game game = new Game(setting);

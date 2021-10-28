@@ -3,8 +3,12 @@
 		#898989);
 }
 
+
 #topBar {
 	-fx-background-color: #272727;
+}
+#topBar:hover {
+	-fx-background-color: #292929;
 }
 
 
@@ -69,4 +73,40 @@
 	-fx-background-color: #323743,
 		radial-gradient(center 50.0% 0.0%, radius 100.0%, rgba(114.0, 131.0, 148.0, 0.9),
 		rgba(255.0, 255.0, 255.0, 0.0));
+}
+
+
+#txtTime{
+	-fx-background-color: transparent;
+	-fx-border-color: white;
+	-fx-border-radius: 10.0 10.0 10.0 10.0;
+	-fx-background-radius: 10.0 10.0 10.0 10.0;
+	-fx-text-fill: white;
+}
+#txtTime:hover{
+	-fx-background-color: rgba(155.0,155.0,155.0,0.1);		
+}
+
+
+#txtFields{
+	-fx-background-color: transparent;
+	-fx-border-color: white;
+	-fx-border-radius: 10.0 10.0 10.0 10.0;
+	-fx-background-radius: 10.0 10.0 10.0 10.0;
+	-fx-text-fill: white;
+}
+#txtFields:hover{
+	-fx-background-color: rgba(155.0,155.0,155.0,0.1);		
+}
+
+
+#txtBombs{
+	-fx-background-color: transparent;
+	-fx-border-color: white;
+	-fx-border-radius: 10.0 10.0 10.0 10.0;
+	-fx-background-radius: 10.0 10.0 10.0 10.0;
+	-fx-text-fill: white;
+}
+#txtBombs:hover{
+	-fx-background-color: rgba(155.0,155.0,155.0,0.1);		
 }

@@ -413,7 +413,7 @@ public class Game {
 		// number of fields
 		int maxLen = (int) (Screen.getPrimary().getBounds().getHeight() - 120) / BUTTON_SIZE;
 
-		if (settings.getFieldLength() * settings.getFieldLength() != settings.getFields())
+		if (setting.getFieldLength() * setting.getFieldLength() != setting.getFields())
 			return false;
 
 		if (setting.getFieldLength() > maxLen)
@@ -501,7 +501,7 @@ public class Game {
 		helpButton.setOnMouseClicked(e -> {
 			helpButtonClicked();
 		});
-
+		
 		backButton = (Button) BasicGameFunctionsHelper.fixSize(backButton, resetButtonHeight, resetButtonHeight);
 		backButton = (Button) BasicGameFunctionsHelper.fixLoc(backButton, "backButton",
 				buttonPane.getLayoutX() + BUTTON_PANE_SIZE + (buttonPane.getLayoutX() / 2 - resetButtonHeight / 2.0),

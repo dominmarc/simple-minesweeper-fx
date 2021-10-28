@@ -9,5 +9,6 @@ module de.ifdgmbh.mad.minesweeper {
 	requires javafx.base;
 	requires javafx.controls;
 	requires javafx.fxml;
+	requires java.desktop;
 
 }

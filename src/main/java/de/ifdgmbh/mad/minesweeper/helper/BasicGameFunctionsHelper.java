@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
  * @author MAD
  * @author iFD
  */
-public class BasicGameFunctionsHelper {
+public final class BasicGameFunctionsHelper {
 
 	private static final String BAR = "==============================================";
 
