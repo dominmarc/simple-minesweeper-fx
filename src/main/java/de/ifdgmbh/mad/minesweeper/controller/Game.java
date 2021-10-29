@@ -232,36 +232,9 @@ public class Game {
 			return;
 		}
 
-		switch (fieldValue) {
-		case 9:
-			// bomb hit
-			currentBtn.setBackground(BasicGameFunctionsHelper.getBomb());
-			timer.cancel();
-			running = false;
-			infoUser("Game Over, you hit a bomb!");
-			showSolution();
-			return;
-		case 0:
-			// zero field/ no bomb nearby
-			// open all surrounding zero fields
-			currentBtn.setBackground(getChecked());
+		checkField(x, y, btnIndex, fieldValue);
+		if (fieldValue == 0)
 			openFields(btnIndex, x, y);
-			return;
-
-		// relevant number fields
-		case 1:
-			currentBtn.setTextFill(Color.rgb(56, 0, 254));
-			break;
-		case 2:
-			currentBtn.setTextFill(Color.rgb(0, 107, 4));
-			break;
-		default:
-			currentBtn.setTextFill(Color.rgb(142, 11, 0));
-			break;
-		}
-
-		currentBtn.setBackground(getChecked());
-		currentBtn.setText(String.valueOf(fieldValue));
 	}
 
 	/**
@@ -281,6 +254,8 @@ public class Game {
 			clickedBtn.setGraphic(null);
 			bombsLeft++;
 		} else {
+			if (isChecked(buttons[btnIndex]))
+				return;
 			clickedBtn.setBackground(BasicGameFunctionsHelper.getBomb());
 			clickedBtn.setGraphic(new ImageView(ImageProvider.getFlagIMG()));
 			bombsLeft--;
@@ -396,6 +371,46 @@ public class Game {
 	}
 
 	/**
+	 * Function to check (open) the specified field.
+	 * 
+	 * @param x          coordinate of the specified field
+	 * @param y          coordinate of the specified field
+	 * @param btnIndex   index of the specified field
+	 * @param fieldValue field value (how many bombs around) of the specified field
+	 */
+	private void checkField(int x, int y, int btnIndex, int fieldValue) {
+		switch (fieldValue) {
+		case 9:
+			// bomb hit
+			buttons[btnIndex].setBackground(BasicGameFunctionsHelper.getBomb());
+			timer.cancel();
+			running = false;
+			infoUser("Game Over, you hit a bomb!");
+			showSolution();
+			return;
+		case 0:
+			// zero field/ no bomb nearby
+			// open all surrounding zero fields
+			buttons[btnIndex].setBackground(getChecked());
+			return;
+
+		// relevant number fields
+		case 1:
+			buttons[btnIndex].setTextFill(Color.rgb(56, 0, 254));
+			break;
+		case 2:
+			buttons[btnIndex].setTextFill(Color.rgb(0, 107, 4));
+			break;
+		default:
+			buttons[btnIndex].setTextFill(Color.rgb(142, 11, 0));
+			break;
+		}
+
+		buttons[btnIndex].setBackground(getChecked());
+		buttons[btnIndex].setText(String.valueOf(fieldValue));
+	}
+
+	/**
 	 * Checks the validity of the passed setting.
 	 * 
 	 * @param setting the settings to check
@@ -501,7 +516,7 @@ public class Game {
 		helpButton.setOnMouseClicked(e -> {
 			helpButtonClicked();
 		});
-		
+
 		backButton = (Button) BasicGameFunctionsHelper.fixSize(backButton, resetButtonHeight, resetButtonHeight);
 		backButton = (Button) BasicGameFunctionsHelper.fixLoc(backButton, "backButton",
 				buttonPane.getLayoutX() + BUTTON_PANE_SIZE + (buttonPane.getLayoutX() / 2 - resetButtonHeight / 2.0),
@@ -620,55 +635,24 @@ public class Game {
 	 */
 	public void openFields(int btnIndex, int x, int y) {
 		int fieldLength = settings.getFieldLength();
-		// up
-		if (gamefield[x][y - 1] == 0) {
-			gamefield[x][y - 1] = -1;
-			buttons[btnIndex - fieldLength].setBackground(getChecked());
-			openFields(btnIndex - fieldLength, x, y - 1);
-		}
-		// right up
-		if (gamefield[x + 1][y - 1] == 0) {
-			gamefield[x + 1][y - 1] = -1;
-			buttons[btnIndex - fieldLength + 1].setBackground(getChecked());
-			openFields(btnIndex - fieldLength + 1, x + 1, y - 1);
-		}
-		// right
-		if (gamefield[x + 1][y] == 0) {
-			gamefield[x + 1][y] = -1;
-			buttons[btnIndex + 1].setBackground(getChecked());
-			openFields(btnIndex + 1, x + 1, y);
-		}
-		// right down
-		if (gamefield[x + 1][y + 1] == 0) {
-			gamefield[x + 1][y + 1] = -1;
-			buttons[btnIndex + fieldLength + 1].setBackground(getChecked());
-			openFields(btnIndex + fieldLength + 1, x + 1, y + 1);
-		}
-		// down
-		if (gamefield[x][y + 1] == 0) {
-			gamefield[x][y + 1] = -1;
-			buttons[btnIndex + fieldLength].setBackground(getChecked());
-			openFields(btnIndex + fieldLength, x, y + 1);
-		}
-		// left down
-		if (gamefield[x - 1][y + 1] == 0) {
-			gamefield[x - 1][y + 1] = -1;
-			buttons[btnIndex + fieldLength - 1].setBackground(getChecked());
-			openFields(btnIndex + fieldLength - 1, x - 1, y + 1);
-		}
-		// left
-		if (gamefield[x - 1][y] == 0) {
-			gamefield[x - 1][y] = -1;
-			buttons[btnIndex - 1].setBackground(getChecked());
-			openFields(btnIndex - 1, x - 1, y);
-		}
-		// left up
-		if (gamefield[x - 1][y - 1] == 0) {
-			gamefield[x - 1][y - 1] = -1;
-			buttons[btnIndex - fieldLength - 1].setBackground(getChecked());
-			openFields(btnIndex - fieldLength - 1, x - 1, y - 1);
-		}
 
+		for (int i = y - 1; i <= y + 1; i++)
+			for (int k = x - 1; k <= x + 1; k++) {
+				if ((i == y && k == x) || (gamefield[k][i] == -1))
+					continue;
+
+				int idx = BasicGameFunctionsHelper.getIndex(k, i, fieldLength);
+				int fieldValue = gamefield[k][i];
+
+				if (fieldValue >= 1 && fieldValue <= 8) {
+					checkField(k, i, idx, fieldValue);
+				}
+				if (fieldValue == 0) {
+					checkField(k, i, idx, fieldValue);
+					gamefield[k][i] = -1;
+					openFields(idx, k, i);
+				}
+			}
 	}
 
 	/**

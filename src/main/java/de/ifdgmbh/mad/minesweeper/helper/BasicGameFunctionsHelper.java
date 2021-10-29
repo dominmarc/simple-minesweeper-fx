@@ -108,6 +108,19 @@ public final class BasicGameFunctionsHelper {
 	}
 
 	/**
+	 * Function to calculate the index of the button according to the gamefield
+	 * coordinates.</br>
+	 * 
+	 * @param x           coordinate in gamefield array
+	 * @param y           coordinate in gamefield array
+	 * @param fieldLength Offset of the gamefield (eg. easy -> 9)
+	 * @return index in button array
+	 */
+	public static int getIndex(final int x, final int y, final int fieldLength) {
+		return (((y - 1) * fieldLength) + x);
+	}
+
+	/**
 	 * Function to set an absolute size setting to a node.
 	 * 
 	 * @param node   the element to set the size

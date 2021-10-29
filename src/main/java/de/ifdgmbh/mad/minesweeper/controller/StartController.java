@@ -11,6 +11,8 @@ import de.ifdgmbh.mad.minesweeper.logger.MinesweeperLogger;
 import de.ifdgmbh.mad.minesweeper.main.FileProvider;
 import de.ifdgmbh.mad.minesweeper.main.ImageProvider;
 import de.ifdgmbh.mad.minesweeper.main.PopUp;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -114,15 +116,24 @@ public class StartController implements IController {
 
 		// level selection
 		levelSelection.getItems().addAll(LevelType.EASY, LevelType.INTERMEDIATE, LevelType.HARD, LevelType.CUSTOM);
-		levelSelection.setOnAction(e -> {
-			LevelType lvl;
-			if ((lvl = levelSelection.getSelectionModel().getSelectedItem()) != null && lvl.equals(LevelType.CUSTOM)) {
-				txtBombs.setEditable(true);
-				txtFields.setEditable(true);
-			} else {
 
+		// add listener
+		levelSelection.valueProperty().addListener(new ChangeListener<LevelType>() {
+			@Override
+			public void changed(ObservableValue<? extends LevelType> observable, LevelType oldValue,
+					LevelType newValue) {
+				if (newValue.equals(LevelType.CUSTOM)) {
+					txtBombs.setEditable(true);
+					txtFields.setEditable(true);
+				} else {
+					txtBombs.setEditable(false);
+					txtBombs.setText("");
+					txtFields.setEditable(false);
+					txtFields.setText("");
+				}
 			}
 		});
+
 		// field method selection
 		fieldSelection.getItems().addAll("OFFSET", "NUMBER");
 
